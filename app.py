@@ -6,9 +6,10 @@ bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(commands=['start', 'help'])
 def help(message: telebot.types.Message):
-        text = 'Чтобы начать работу ввыедите комманду боту в следующем формате: \n<имя валюты> \
-<в какую валюту перевести> \
-<количество первой валюты>\n Увидеть список всех оступных валют: /values'
+        text = 'Привет! Я чат-бот, конвертирующий валюты ' \
+               '\n Чтобы начать работу ввыедите комманду боту в следующем формате:' \
+               '\n <имя валюты> \n <в какую валюту перевести> \n <количество первой валюты> ' \
+               '\n Увидеть список всех оступных валют /values \n Повторить инфомацию /help'
         bot.reply_to(message, text)
 
 @bot.message_handler(commands=['values'])
@@ -24,7 +25,7 @@ def convert(message: telebot.types.Message):
          values = message.text.split(' ')
 
          if len(values) != 3:
-                 raise ConvertionException('Слишком много параметров')
+                 raise ConvertionException('Слишком мало/много параметров')
          quote, base, amount = values
          total_base = CryptoConverter.convert(quote, base, amount)
          total_base = float(total_base) * float(amount)
@@ -33,7 +34,7 @@ def convert(message: telebot.types.Message):
     except Exception as e:
         bot.reply_to(message, f'Неудалось обработать команду\n{e}')
     else:
-        text = f'Цена {amount} {quote} в {base} - {total_base}'
+        text = f'Цена {amount} {quote} в {base} = {total_base}'
         bot.send_message(message.chat.id, text)
 
 bot.polling()
